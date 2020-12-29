@@ -1,99 +1,114 @@
-const selectHours = document.querySelector('select#hour');
-const selectMinutes = document.querySelector('select#minute');
-const selectPeriod = document.querySelector('select#period');
-const calculate = document.querySelector('button#calculate');
-const results = document.querySelector('div#results');
-const calcNow = document.querySelector('button#calc-now');
-const resultsNow = document.querySelector('div#results-now');
-const errors = document.querySelector('div#errors');
+const getSleepCycles = (hour, minute) => {
+    const firstCycle = new Date(null, null, null, hour - 9, minute);
+    const secondCycle = new Date(null, null, null, hour - 7, minute - 30);
+    const thirdCycle = new Date(null, null, null, hour - 6, minute);
+    const fourthCycle = new Date(null, null, null, hour - 4, minute - 30);
 
-calculate.addEventListener('click', timesToWakeUp);
+    return [firstCycle, secondCycle, thirdCycle, fourthCycle];
+};
 
-function timesToWakeUp() {
+const setSleepCyclesPM = (period, sleepCyclesArray) => {
+    if (period === 'PM') {
+        const cycles = sleepCyclesArray.map(sleepCycleObject => {
+            const hours = sleepCycleObject.getHours() - 12;
+            sleepCycleObject.setHours(hours);
+        });
+        return cycles;
+    };
+};
+
+const setSleepCyclesTwelve = (hour, sleepCyclesArray) => {
+    if (hour === '12') {
+        const cycle = sleepCyclesArray.map(sleepCycleObject => {
+            const hours = sleepCycleObject.getHours() + 12
+            sleepCycleObject.setHours(hours);
+        });
+        return cycle;
+    };
+};
+
+const isEmpty = (hour, minute, period) => {
+    const errors = document.querySelector('div#errors');
+    if (hour === '' || minute === '' || period === '') {
+        errors.textContent = 'You must fill in the fields.';
+        errors.setAttribute('class', 'error');
+        return true;
+    };
+    errors.textContent = '';
+    return false;
+};
+
+const toTwelveHourTimeString = (arr) => {
+    const twelveHourArr = arr.map(obj => {
+        return obj.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    });
+    return twelveHourArr;
+};
+
+const getWakeUpTimes = (event) => {
+    event.preventDefault();
+    const results = document.querySelector('div#results');
+    const selectHours = document.querySelector('select#hour');
+    const selectMinutes = document.querySelector('select#minute');
+    const selectPeriod = document.querySelector('select#period');
+
     const hour = selectHours.value;
     const minute = selectMinutes.value;
     const period = selectPeriod.value;
 
-    let time;
+    const errors = isEmpty(hour, minute, period);
 
-    time = new Date(null, null, null, `${hour}`, `${minute}`);
-    const firstCycle = time;
-    firstCycle.setHours(time.getHours() - 9);
+    const sleepCycles = getSleepCycles(hour, minute);
 
-    time = new Date(null, null, null, `${hour}`, `${minute}`);
-    const secondCycle = time;
-    secondCycle.setHours(time.getHours() - 7);
-    secondCycle.setMinutes(time.getMinutes() - 30);
+    setSleepCyclesPM(period, sleepCycles);
 
-    time = new Date(null, null, null, `${hour}`, `${minute}`)
-    const thirdCycle = time;
-    thirdCycle.setHours(time.getHours() - 6);
+    setSleepCyclesTwelve(hour, sleepCycles);
 
-    time = new Date(null, null, null, `${hour}`, `${minute}`);
-    const fourthCycle = time;
-    fourthCycle.setHours(time.getHours() - 4.5);
-    fourthCycle.setMinutes(time.getMinutes() - 30);
+    const cycles = toTwelveHourTimeString(sleepCycles);
 
-    if (period === 'PM') {
-        firstCycle.setHours(firstCycle.getHours() - 12);
-        secondCycle.setHours(secondCycle.getHours() - 12);
-        thirdCycle.setHours(thirdCycle.getHours() - 12);
-        fourthCycle.setHours(fourthCycle.getHours() - 12);
-    }
-
-    if (hour === '12') {
-        firstCycle.setHours(firstCycle.getHours() + 12);
-        secondCycle.setHours(secondCycle.getHours() + 12);
-        thirdCycle.setHours(thirdCycle.getHours() + 12);
-        fourthCycle.setHours(fourthCycle.getHours() + 12);
-    }
-
-    if (hour === '' || minute === '' || period === '') {
-        errors.textContent = 'You must fill in the fields.';
-        errors.setAttribute('class', 'error');
-    } else {
-        errors.textContent = '';
-        results.innerHTML = `
+    return !errors ? results.innerHTML = `
         You should go to bed at:
         <div class="cycle-color">
-            ${firstCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-            ${secondCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-            ${thirdCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-            ${fourthCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+            ${cycles[0]}<span class="commas">, or</span>
+            ${cycles[1]}<span class="commas">, or</span>
+            ${cycles[2]}<span class="commas">, or</span>
+            ${cycles[3]}
         </div>
-        `
-    }
+        ` : results.textContent = '';
 };
 
-calcNow.addEventListener('click', wakeUpAtTheseTimes);
+const form = document.querySelector('form#calculate');
+form.addEventListener('submit', getWakeUpTimes);
 
-function wakeUpAtTheseTimes() {
-    let date = new Date();
+const getSleepCyclesNow = (hour, minute) => {
+    const firstCycle = new Date(null, null, null, hour + 9, minute);
+    const secondCycle = new Date(null, null, null, hour + 7, minute + 30);
+    const thirdCycle = new Date(null, null, null, hour + 6, minute);
+    const fourthCycle = new Date(null, null, null, hour + 4, minute + 30);
 
-    const firstCycle = date;
-    firstCycle.setHours(date.getHours() + 9);
+    return [firstCycle, secondCycle, thirdCycle, fourthCycle];
+};
 
-    date = new Date();
-    const secondCycle = date;
-    secondCycle.setHours(date.getHours() + 7);
-    secondCycle.setMinutes(date.getMinutes() + 30);
+const getWakeUpTimesNow = () => {
+    const resultsNow = document.querySelector('div#results-now')
+    const time = new Date();
+    const hour = time.getHours();
+    const minute = time.getMinutes();
 
-    date = new Date();
-    const thirdCycle = date;
-    thirdCycle.setHours(date.getHours() + 6);
+    const sleepCycles = getSleepCyclesNow(hour, minute);
 
-    date = new Date();
-    const fourthCycle = date;
-    fourthCycle.setHours(date.getHours() + 4);
-    fourthCycle.setMinutes(date.getMinutes() + 30);
+    const cycles = toTwelveHourTimeString(sleepCycles);
 
     resultsNow.innerHTML = `
     You should wake up at:
     <div class="cycle-color">
-        ${firstCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-        ${secondCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-        ${thirdCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}<span class="commas">, or</span>
-        ${fourthCycle.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+        ${cycles[0]}<span class="commas">, or</span>
+        ${cycles[1]}<span class="commas">, or</span>
+        ${cycles[2]}<span class="commas">, or</span>
+        ${cycles[3]}
     </div>
     `
 };
+
+const calcNow = document.querySelector('button#calc-now');
+calcNow.addEventListener('click', getWakeUpTimesNow);
