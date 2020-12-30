@@ -7,24 +7,28 @@ const getSleepCycles = (hour, minute) => {
     return [firstCycle, secondCycle, thirdCycle, fourthCycle];
 };
 
+
 const setSleepCyclesPM = (period, sleepCyclesArray) => {
+    const copy = sleepCyclesArray.map(s => new Date(s.getTime()))
     if (period === 'PM') {
-        const cycles = sleepCyclesArray.map(sleepCycleObject => {
+        return copy.map(sleepCycleObject => {
             const hours = sleepCycleObject.getHours() - 12;
             sleepCycleObject.setHours(hours);
+            return sleepCycleObject;
         });
-        return cycles;
     };
+    return copy;
 };
 
 const setSleepCyclesTwelve = (hour, sleepCyclesArray) => {
+    const copy = sleepCyclesArray.map(s => new Date(s.getTime()))
     if (hour === '12') {
-        const cycle = sleepCyclesArray.map(sleepCycleObject => {
+        return copy.map(sleepCycleObject => {
             const hours = sleepCycleObject.getHours() + 12
             sleepCycleObject.setHours(hours);
         });
-        return cycle;
     };
+    return copy;
 };
 
 const isEmpty = (hour, minute, period) => {
@@ -45,9 +49,7 @@ const toTwelveHourTimeString = (arr) => {
     return twelveHourArr;
 };
 
-const getWakeUpTimes = (event) => {
-    event.preventDefault();
-    const results = document.querySelector('div#results');
+const getDOMelements = () => {
     const selectHours = document.querySelector('select#hour');
     const selectMinutes = document.querySelector('select#minute');
     const selectPeriod = document.querySelector('select#period');
@@ -56,25 +58,41 @@ const getWakeUpTimes = (event) => {
     const minute = selectMinutes.value;
     const period = selectPeriod.value;
 
+    return { hour, minute, period };
+};
+
+const render = (isErrors, sleepCycles) => {
+    const results = document.querySelector('div#results');
+
+    return !isErrors ? results.innerHTML = `
+    You should go to bed at:
+    <div class="cycle-color">
+        ${sleepCycles[0]}<span class="commas">, or</span>
+        ${sleepCycles[1]}<span class="commas">, or</span>
+        ${sleepCycles[2]}<span class="commas">, or</span>
+        ${sleepCycles[3]}
+    </div>
+    ` : results.textContent = '';
+};
+
+const getWakeUpTimes = (event) => {
+    event.preventDefault();
+    
+    const elems = getDOMelements();
+
+    const { hour, minute, period } = elems
+
     const errors = isEmpty(hour, minute, period);
 
     const sleepCycles = getSleepCycles(hour, minute);
 
-    setSleepCyclesPM(period, sleepCycles);
+    const sleepCyclesPM = setSleepCyclesPM(period, sleepCycles);
 
-    setSleepCyclesTwelve(hour, sleepCycles);
+    const twelve = setSleepCyclesTwelve(hour, sleepCyclesPM);
 
-    const cycles = toTwelveHourTimeString(sleepCycles);
+    const cycles = toTwelveHourTimeString(twelve);
 
-    return !errors ? results.innerHTML = `
-        You should go to bed at:
-        <div class="cycle-color">
-            ${cycles[0]}<span class="commas">, or</span>
-            ${cycles[1]}<span class="commas">, or</span>
-            ${cycles[2]}<span class="commas">, or</span>
-            ${cycles[3]}
-        </div>
-        ` : results.textContent = '';
+    render(errors, cycles);
 };
 
 const form = document.querySelector('form#calculate');
