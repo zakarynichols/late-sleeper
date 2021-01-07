@@ -1,14 +1,21 @@
-const canvas = document.querySelector('canvas');
+const canvas = <HTMLCanvasElement>document.querySelector('canvas');
 
-const div = document.querySelector('html');
+const div = <HTMLHtmlElement>document.querySelector('html');
 
 const context = canvas.getContext('2d');
 
-const width = canvas.width = div.offsetWidth;
-const height = canvas.height = div.offsetHeight + 300;
+const width: number = canvas.width = div.offsetWidth;
+const height: number = canvas.height = div.offsetHeight + 100;
 
 class Star {
-    constructor(x, y, velX, velY, color, size) {
+    x: number;
+    y: number;
+    velX: number;
+    velY: number;
+    color: string;
+    size: number;
+
+    constructor(x: number, y: number, velX: number, velY: number, color: string, size: number) {
         this.x = x;
         this.y = y;
         this.velX = velX;
@@ -16,17 +23,20 @@ class Star {
         this.color = color;
         this.size = size;
     };
-    draw() {
+
+    draw(): void {
         context.beginPath();
         context.fillStyle = this.color;
         context.arc(this.x, this.y, this.size, 0, 2 * Math.PI, false);
         context.fill();
     };
-    update() {
+
+    update(): void {
         this.x += this.velX;
         this.y += this.velY;
     };
-    reset() {
+
+    reset(): void {
         if (this.x >= width) {
             this.x = 0;
         };
@@ -36,18 +46,20 @@ class Star {
         };
     };
 };
-
-
-
-
 class ShootingStar {
-    constructor(sx, sy, sVelX, sVelY) {
+    sx: number;
+    sy: number;
+    sVelX: number;
+    sVelY: number;
+
+    constructor(sx: number, sy: number, sVelX: number, sVelY: number) {
         this.sx = sx;
         this.sy = sy;
         this.sVelX = sVelX;
         this.sVelY = sVelY;
     };
-    draw() {
+
+    draw(): void {
         context.lineWidth = 3;
         context.lineCap = 'round';
         context.beginPath();
@@ -56,7 +68,8 @@ class ShootingStar {
         context.strokeStyle = "white";
         context.stroke();
     };
-    update() {
+
+    update(): void {
         this.sx += this.sVelX;
         this.sy += this.sVelY;
     };
@@ -64,12 +77,12 @@ class ShootingStar {
 
 
 
-const stars = [];
-const shootingStars = [];
+const stars: Star[] = [];
+const shootingStars: ShootingStar[] = [];
 
-const paint = () => {
+const paint = (): void => {
     for (let i = 0; i < 300; i++) {
-        const star = new Star(
+        const star: Star = new Star(
             Math.random() * width,
             Math.random() * height,
             .3,
@@ -84,9 +97,9 @@ const paint = () => {
 
 paint();
 
-const shoot = () => {
+const shoot = (): void => {
     setInterval(() => {
-        const shootingStar = new ShootingStar(
+        const shootingStar: ShootingStar = new ShootingStar(
             -100,
             Math.random() * height,
             70,
@@ -101,7 +114,7 @@ const shoot = () => {
 
 shoot();
 
-const loop = () => {
+const loop = (): void => {
     context.clearRect(0, 0, width, height);
     for (let i = 0; i < stars.length; i++) {
         stars[i].draw();
