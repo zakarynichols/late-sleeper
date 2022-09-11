@@ -1,0 +1,23 @@
+{
+  "name": "late-sleeper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakarynichols/late-sleeper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zakarynichols/late-sleeper/issues"
+  },
+  "homepage": "https://github.com/zakarynichols/late-sleeper#readme",
+  "devDependencies": {
+    "typescript": "^4.8.3"
+  }
+}
