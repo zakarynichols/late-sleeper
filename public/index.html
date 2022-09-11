@@ -1,0 +1,96 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BedTime 🌒</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./styles/styles.css" />
+  </head>
+
+  <body>
+    <div id="test">
+      <canvas></canvas>
+      <div class="centered text-border container" id="expand">
+        <section>
+          <h1 class="pt-3">LateSleeper 🌒</h1>
+          <p style="max-width: 500px; margin: 10 auto">
+            <i>
+              BedTime counts backwards in your sleep cycles to find you the best
+              time to wake up without feeling groggy!
+            </i>
+          </p>
+          <p style="max-width: 500px; margin: 10 auto">
+            <i>
+              Watch out for the shooting stars. If you see one make a wish!
+            </i>
+          </p>
+        </section>
+
+        <h5 class="my-2"><strong>What time do you need to wake up?</strong></h5>
+
+        <div id="errors" class="my-1"></div>
+        <form id="calculate">
+          <section class="form-group">
+            <label for="hour">Hour:</label>
+            <select id="hour" class="form-control">
+              <option value="">Hour...</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </section>
+
+          <section class="form-group">
+            <label for="minute">Minute:</label>
+            <select id="minute" class="form-control">
+              <option value="">Minute...</option>
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </section>
+
+          <section class="form-group">
+            <label for="period">Period:</label>
+            <select id="period" class="form-control">
+              <option value="">AM or PM...</option>
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </section>
+          <button type="submit" class="btn btn-light">Calculate</button>
+        </form>
+
+        <!-- Results will render here. -->
+        <div id="results" class="my-2"></div>
+
+        <h5 class="my-2" style="max-width: 500px; margin: 10 auto">
+          <strong
+            >If you're going to sleep now and wan't the best times to wake up,
+            try this:</strong
+          >
+        </h5>
+        <button id="calc-now" class="btn btn-light">Calculate</button>
+        <div id="results-now" class="mt-2"></div>
+      </div>
+    </div>
+    <script src="./sleepy.js"></script>
+    <script src="./space.js"></script>
+  </body>
+</html>
