@@ -59,17 +59,18 @@ class Star {
     }
   }
 }
-class ShootingStar {
-  sx: number;
-  sy: number;
-  sVelX: number;
-  sVelY: number;
 
-  constructor(sx: number, sy: number, sVelX: number, sVelY: number) {
-    this.sx = sx;
-    this.sy = sy;
-    this.sVelX = sVelX;
-    this.sVelY = sVelY;
+class ShootingStar {
+  x: number;
+  y: number;
+  velX: number;
+  velY: number;
+
+  constructor(x: number, y: number, velX: number, velY: number) {
+    this.x = x;
+    this.y = y;
+    this.velX = velX;
+    this.velY = velY;
   }
 
   draw(): void {
@@ -78,22 +79,22 @@ class ShootingStar {
     context.lineWidth = 3;
     context.lineCap = "round";
     context.beginPath();
-    context.moveTo(this.sx, this.sy);
-    context.lineTo(this.sx + 150, this.sy + 15);
+    context.moveTo(this.x, this.y);
+    context.lineTo(this.x + 150, this.y + 15);
     context.strokeStyle = "white";
     context.stroke();
   }
 
   update(): void {
-    this.sx += this.sVelX;
-    this.sy += this.sVelY;
+    this.x += this.velX;
+    this.y += this.velY;
   }
 }
 
 const stars: Star[] = [];
 const shootingStars: ShootingStar[] = [];
 
-const paint = (): void => {
+function paint(): void {
   for (let i = 0; i < 300; i++) {
     const star: Star = new Star(
       Math.random() * width,
@@ -106,28 +107,25 @@ const paint = (): void => {
 
     stars.push(star);
   }
-};
+}
 
 paint();
 
-const shoot = (): void => {
+function shoot(): void {
   setInterval(() => {
-    const shootingStar: ShootingStar = new ShootingStar(
-      -100,
-      Math.random() * height,
-      70,
-      7
-    );
+    const shootingStar = new ShootingStar(-100, Math.random() * height, 70, 7);
     shootingStars.push(shootingStar);
+
+    /* For performance sake, remove the previous shooting star from the array */
     while (shootingStars.length > 1) {
       shootingStars.shift();
     }
   }, 2000);
-};
+}
 
 shoot();
 
-const loop = (): void => {
+function loop(): void {
   if (context === null) throw new Error("missing 2d context");
 
   context.clearRect(0, 0, width, height);
@@ -143,6 +141,6 @@ const loop = (): void => {
   }
 
   requestAnimationFrame(loop);
-};
+}
 
 loop();
