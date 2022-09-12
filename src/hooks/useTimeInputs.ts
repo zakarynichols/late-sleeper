@@ -1,4 +1,4 @@
-import { querySelectorOrThrow } from "../utils.js";
+import { querySelectorOrThrow } from "../dom.js";
 
 /**
  * useTimeInputs gets the times from the respective DOM elements.

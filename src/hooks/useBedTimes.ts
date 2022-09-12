@@ -1,8 +1,8 @@
-export const useWakeUpTimes = (
+export function useBedTimes(
   hours: number,
   minutes: number,
   period: "AM" | "PM"
-) => {
+) {
   const date = new Date();
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -36,4 +36,4 @@ export const useWakeUpTimes = (
   }
 
   return times;
-};
+}

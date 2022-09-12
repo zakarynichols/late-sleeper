@@ -5,5 +5,5 @@
     "module": "ESNext",
     "outDir": "./public/js"
   },
-  "include": ["./src"]
+  "include": ["./src", "./global.d.ts"]
 }

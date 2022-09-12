@@ -1,46 +1,47 @@
 body {
-    background-color: black;
-    color: #E0E0E0;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 20px;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
+  background-color: black;
+  color: #e0e0e0;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-size: 20px;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
-.commas {
-    color: #E0E0E0;
+.comma {
+  color: #e0e0e0;
 }
 
 .a-little-margin {
-    margin-top: 20px;
-    margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .cycle-color {
-    color: #FFC000;
+  color: #ffc000;
 }
 
 .error {
-    color: rgb(228, 13, 13);
+  color: rgb(228, 13, 13);
 }
 
 .form-group {
-    max-width: 500px;
-    margin: 0 auto;
-    margin-bottom: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-bottom: 20px;
 }
 
 canvas {
-    position: absolute;
-    z-index: -1;
-    opacity: 0.5;
+  position: absolute;
+  z-index: -1;
+  opacity: 0.5;
 }
 
 .centered {
-    text-align: center;
+  text-align: center;
 }
 
-#test{ 
-    position: relative;
+#test {
+  position: relative;
 }
