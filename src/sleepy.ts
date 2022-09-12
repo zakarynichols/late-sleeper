@@ -1,47 +1,14 @@
-const getSleepCycles = (hours: number, minutes: number): Date[] => {
-  const time = new Date();
-  const year = time.getFullYear();
-  const month = time.getMonth();
-  const day = time.getDay();
-  const hoursAndMins = [
-    { hours: hours - 9, minutes },
-    { hours: hours - 7, minutes: minutes - 30 },
-    { hours: hours - 6, minutes },
-    { hours: hours - 4, minutes: minutes - 30 },
-  ];
-  const cycles = hoursAndMins.map((hourAndMin) => {
-    return new Date(year, month, day, hourAndMin.hours, hourAndMin.minutes);
-  });
+import { useErrorElement } from "./hooks/useErrorElement";
+import { useTimeInputs } from "./hooks/useTimeInputs";
+import { useWakeUpTimes } from "./hooks/useWakeUpTimes";
+import { querySelectorOrThrow } from "./utils";
 
-  return cycles;
-};
+type Time = { hour: string; minute: string; period: string };
 
-const subtractTwelveHours = (sleepCyclesArray: Date[]): Date[] => {
-  const copy: Date[] = sleepCyclesArray.map((s) => new Date(s.getTime()));
-  return copy.map((sleepCycleObject) => {
-    const hours: number = sleepCycleObject.getHours() - 12;
-    sleepCycleObject.setHours(hours);
-    return sleepCycleObject;
-  });
-};
-
-const addTwelveHours = (sleepCyclesArray: Date[]): Date[] => {
-  const copy: Date[] = sleepCyclesArray.map((s) => new Date(s.getTime()));
-  return copy.map((sleepCycleObject) => {
-    const hours: number = sleepCycleObject.getHours() + 12;
-    sleepCycleObject.setHours(hours);
-    return sleepCycleObject;
-  });
-};
-
-const isEmpty = (hour: string, minute: string, period: string): boolean => {
-  const errors = <HTMLElement>document.querySelector("div#errors");
-  if (hour === "" || minute === "" || period === "") {
-    errors.textContent = "You must fill in the fields.";
-    errors.setAttribute("class", "error");
+const isEmpty = (params: Time): boolean => {
+  if (params.hour === "" || params.minute === "" || params.period === "") {
     return true;
   }
-  errors.textContent = "";
   return false;
 };
 
@@ -56,29 +23,15 @@ const toTwelveHourTime = (arr: Date[]): string[] => {
   return twelveHourArr;
 };
 
-const getDOMelements = (): { hour: string; minute: string; period: string } => {
-  const selectHours: string = (<HTMLInputElement>(
-    document.querySelector("select#hour")
-  )).value;
-  const selectMinutes: string = (<HTMLInputElement>(
-    document.querySelector("select#minute")
-  )).value;
-  const selectPeriod: string = (<HTMLInputElement>(
-    document.querySelector("select#period")
-  )).value;
+const render = (sleepCycles: string[] | null): void => {
+  const results = querySelectorOrThrow<HTMLDivElement>("#results");
 
-  const hour: string = selectHours;
-  const minute: string = selectMinutes;
-  const period: string = selectPeriod;
+  if (sleepCycles === null) {
+    results.innerHTML = "";
+    return;
+  }
 
-  return { hour, minute, period };
-};
-
-const render = (isErrors: boolean, sleepCycles: string[]): string => {
-  const results = <HTMLElement>document.querySelector("div#results");
-
-  return !isErrors
-    ? (results.innerHTML = `
+  results.innerHTML = `
     You should go to bed at:
     <div class="cycle-color">
         ${sleepCycles[0]}<span class="commas">, or</span>
@@ -86,34 +39,40 @@ const render = (isErrors: boolean, sleepCycles: string[]): string => {
         ${sleepCycles[2]}<span class="commas">, or</span>
         ${sleepCycles[3]}
     </div>
-    `)
-    : (results.textContent = "");
+    `;
 };
 
-const getWakeUpTimes = (event: Event): void => {
-  event.preventDefault();
+const getWakeUpTimes = (): void => {
+  const { hour, minute, period } = useTimeInputs();
+  const errors = useErrorElement();
 
-  const elems = getDOMelements();
+  if (isEmpty({ hour, minute, period })) {
+    errors.show("You must fill in the fields.");
+    render(null);
+  } else {
+    errors.remove();
 
-  const { hour, minute, period } = elems;
+    const wakeUpTimes = useWakeUpTimes(parseInt(hour), parseInt(minute));
 
-  const isErrors = isEmpty(hour, minute, period);
+    debugger;
 
-  const sleepCycles = getSleepCycles(parseInt(hour), parseInt(minute));
+    if (period === "PM") {
+      wakeUpTimes.subtract();
+    }
 
-  if (period === "PM") {
-    subtractTwelveHours(sleepCycles);
+    if (hour === "12") {
+      wakeUpTimes.add();
+    }
+
+    render(toTwelveHourTime(wakeUpTimes.cycles));
   }
-
-  if (hour === "12") {
-    addTwelveHours(sleepCycles);
-  }
-
-  render(isErrors, toTwelveHourTime(sleepCycles));
 };
 
-const form = <Element>document.querySelector("form#calculate");
-form.addEventListener("submit", getWakeUpTimes);
+const form = querySelectorOrThrow<HTMLFormElement>("#calculate");
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  getWakeUpTimes();
+});
 
 const getSleepCyclesNow = () => {
   const time = new Date();
@@ -138,11 +97,7 @@ const getSleepCyclesNow = () => {
 };
 
 const getWakeUpTimesNow = (): void => {
-  const resultsNow = document.querySelector("div#results-now");
-
-  if (resultsNow === null) {
-    throw new Error("cannot find div#results-now element");
-  }
+  const resultsNow = querySelectorOrThrow<HTMLDivElement>("#results-now");
 
   const sleepCycles = getSleepCyclesNow();
 
@@ -159,5 +114,23 @@ const getWakeUpTimesNow = (): void => {
     `;
 };
 
-const calcNow = document.querySelector("button#calc-now");
-calcNow?.addEventListener("click", getWakeUpTimesNow);
+const calcNow = querySelectorOrThrow<HTMLButtonElement>("#calc-now");
+calcNow.addEventListener("click", (e) => {
+  e.preventDefault();
+  getWakeUpTimesNow();
+});
+
+window.addEventListener("error", (ev) => {
+  console.error(ev);
+  if (ev.error instanceof Error) {
+    const bodyStyle = document.body.style;
+
+    bodyStyle.backgroundColor = "red";
+    bodyStyle.color = "white";
+    bodyStyle.textAlign = "center";
+    bodyStyle.marginTop = "20px";
+
+    document.body.textContent =
+      "A fatal error has occurred. Please try reloading the page.";
+  }
+});

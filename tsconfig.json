@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "lib": ["DOM", "ESNext"],
     "strict": true,
     "module": "ESNext",
-    "outDir": "./public"
+    "outDir": "./public/js"
   },
   "include": ["./src"]
 }
