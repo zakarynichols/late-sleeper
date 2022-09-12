@@ -1,4 +1,4 @@
-import { querySelectorOrThrow } from "../utils.js";
+import { querySelectorOrThrow } from "../dom.js";
 
 /**
  * useErrorEvents returns callbacks to show and remove the text and classNames
