@@ -1,6 +1,10 @@
-import { querySelectorOrThrow } from "../utils";
+import { querySelectorOrThrow } from "../utils.js";
 
-export function useErrorElement() {
+/**
+ * useErrorEvents returns callbacks to show and remove the text and classNames
+ * associated with the error element in the document.
+ */
+export function useErrorEvents() {
   const errorEl = querySelectorOrThrow<HTMLDivElement>("#errors");
   const className = "error";
 
