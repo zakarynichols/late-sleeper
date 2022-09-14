@@ -1,0 +1,10 @@
+html {
+  background-color: black;
+  color: white;
+}
+
+canvas {
+  position: absolute;
+  z-index: -1;
+  opacity: 0.5;
+}
