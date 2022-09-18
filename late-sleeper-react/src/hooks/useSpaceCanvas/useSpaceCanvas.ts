@@ -96,11 +96,6 @@ function animate(params: {
     shootingStars[i].reset(windowWidth, windowHeight);
   }
 
-  /* For performance sake, remove the previous shooting star from the array */
-  // while (shootingStars.length > 1) {
-  // shootingStars.shift();
-  // }
-
   /**
    * The first frame fires and subsequent frames get cleaned up.
    * Easiest way to observe this behavior is in the Performance
