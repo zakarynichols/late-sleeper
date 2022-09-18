@@ -10,11 +10,7 @@ import { useSpaceCanvas } from "./hooks/useSpaceCanvas/useSpaceCanvas";
 
 export function App() {
   const { canvasRef } = useSpaceCanvas();
-  const [state, setState] = useState(false);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
   return (
     <>
       <canvas
@@ -22,7 +18,6 @@ export function App() {
         height={window.innerHeight}
         ref={canvasRef}
       ></canvas>
-      <button onClick={() => setState(!state)}>Toggle</button>
       <div className="App">
         <div>App</div>
         <Header />
