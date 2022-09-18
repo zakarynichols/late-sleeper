@@ -11,6 +11,7 @@ export function useSpaceCanvas() {
     if (canvasRef.current === null) return;
 
     const context = canvasRef.current.getContext("2d");
+
     if (context === null) return;
 
     const width = window.innerWidth;
@@ -59,15 +60,13 @@ function createStars(params: { width: number; height: number }): Star[] {
 function shootingStar(params: { windowHeight: number; intervalMs: number }) {
   const shootingStars: ShootingStar[] = [];
 
-  setInterval(() => {
-    const shootingStar = new ShootingStar({
-      posX: Math.random() * -100, // To come in from off screen, set the x-axis negative.
-      posY: Math.random() * params.windowHeight, // Randomly come in from the y-axis.
-      velX: 60, // Speed on x-axis.
-      velY: 7, // Speed on y-axis. Drops fast when set too high
-    });
-    shootingStars.push(shootingStar);
-  }, 2500);
+  const shootingStar = new ShootingStar({
+    posX: Math.random() * -100, // To come in from off screen, set the x-axis negative.
+    posY: Math.random() * params.windowHeight, // Randomly come in from the y-axis.
+    velX: 60, // Speed on x-axis.
+    velY: 7, // Speed on y-axis. Drops fast when set too high
+  });
+  shootingStars.push(shootingStar);
 
   return shootingStars;
 }
@@ -91,16 +90,16 @@ function animate(params: {
     stars[i].reset(windowWidth, windowHeight);
   }
 
-  console.log(shootingStars.length);
   for (let i = 0; i < shootingStars.length; i++) {
     shootingStars[i].draw(context);
     shootingStars[i].update();
+    shootingStars[i].reset(windowWidth, windowHeight);
   }
 
   /* For performance sake, remove the previous shooting star from the array */
-  while (shootingStars.length > 1) {
-    shootingStars.shift();
-  }
+  // while (shootingStars.length > 1) {
+  // shootingStars.shift();
+  // }
 
   /**
    * The first frame fires and subsequent frames get cleaned up.
@@ -115,7 +114,8 @@ function animate(params: {
       stars,
       shootingStars,
     });
-    // Cancel *after* the first paint.
-    cancelAnimationFrame(frameId);
+
+    // *Might* return a cancel callback if they don't want an animated background.
+    // cancelAnimationFrame(frameId);
   });
 }

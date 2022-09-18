@@ -36,12 +36,12 @@ export class ShootingStar {
   }
 
   public reset(width: number, height: number) {
-    if (this.posX - 100 >= width) {
-      this.posX = 0;
-    }
-
-    if (this.posY >= height) {
-      this.posY = 0;
+    if (
+      this.posX - 100 >= width && // Start off screen
+      this.posY >= height * 2.5 // If star position is 2.5 times off screen
+    ) {
+      this.posX = -100;
+      this.posY = Math.random() * height;
     }
   }
 }
