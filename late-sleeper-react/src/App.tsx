@@ -30,3 +30,9 @@ export function App() {
     </>
   );
 }
+
+type StarReturn = {
+  draw: (context: CanvasRenderingContext2D) => void;
+  update: () => void;
+  reset: (windowWidth: number, windowHeight: number) => void;
+};
