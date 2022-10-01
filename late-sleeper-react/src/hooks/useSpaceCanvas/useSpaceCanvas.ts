@@ -8,8 +8,8 @@ export function useSpaceCanvas() {
 
   useEffect(() => {
     // Make sure a ref has been attached to a DOM element.
-    // Might allow a ref to be passed if one already is attached
-    // to a canvas element.
+    // In the future might allow a ref to be passed if one
+    // already is attached to a canvas element.
     if (canvasRef.current === null) return;
 
     const context = canvasRef.current.getContext("2d");
@@ -35,7 +35,6 @@ export function useSpaceCanvas() {
   return { canvasRef };
 }
 
-/* Paints the base stars */
 function createStars(params: { width: number; height: number }) {
   let stars: ReturnType<typeof newStar>[] = [];
   for (let i = 0; i < 300; i++) {
@@ -53,7 +52,6 @@ function createStars(params: { width: number; height: number }) {
   return stars;
 }
 
-/* Paints and shoots a shooting star on an interval */
 function shootingStar(params: { windowHeight: number; intervalMs: number }) {
   const shootingStar = newShootingStar({
     posX: Math.random() * -100, // To come in from off screen, set the x-axis negative.
@@ -89,11 +87,9 @@ function animate(params: {
   shootingStar.reset(windowWidth, windowHeight);
 
   /**
-   * The first frame fires and subsequent frames get cleaned up.
-   * Easiest way to observe this behavior is in the Performance
-   * chrome tools tab and profile the app.
+   * Start the animation. Returns an id for each frame.
    */
-  const frameId = requestAnimationFrame(() => {
+  const _frameId = requestAnimationFrame(() => {
     animate({
       context,
       windowWidth,

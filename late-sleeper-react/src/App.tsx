@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import styles from "./App.module.css";
 import { BedTimes } from "./components/BedTimes";
 import { FormError } from "./components/FormError";
 import { Header } from "./components/Header";
@@ -14,11 +13,12 @@ export function App() {
   return (
     <>
       <canvas
+        className={styles["space-canvas"]}
         width={window.innerWidth}
         height={window.innerHeight}
         ref={canvasRef}
       ></canvas>
-      <div className="App">
+      <div className={styles["app"]}>
         <div>App</div>
         <Header />
         <Question />
@@ -30,9 +30,3 @@ export function App() {
     </>
   );
 }
-
-type StarReturn = {
-  draw: (context: CanvasRenderingContext2D) => void;
-  update: () => void;
-  reset: (windowWidth: number, windowHeight: number) => void;
-};
